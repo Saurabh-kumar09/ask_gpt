@@ -22,7 +22,7 @@ class _ChatScreenState extends State<ChatScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    chatGPT = ChatGPT.instance,
+    ChatGPT = chatGPT.instance,
   }
   @override
   void dispose() {
@@ -38,6 +38,9 @@ class _ChatScreenState extends State<ChatScreen> {
     });
 
     _controller.clear();
+
+    final request = Complete
+
   }
 
   Widget _buildTextComposer() {
