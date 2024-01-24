@@ -1,5 +1,10 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:velocity_x/velocity_x.dart';
+import 'package:chat_gpt_sdk/chat_gpt_sdk.dart';
+
+import 'chatmessage.dart';
 
 class ChatScreen extends StatefulWidget {
   @override
@@ -7,30 +12,73 @@ class ChatScreen extends StatefulWidget {
 }
 
 class _ChatScreenState extends State<ChatScreen> {
+  final TextEditingController _controller = TextEditingController();
+  final List<ChatMessage> _messages = [];
+  ChatGPT? chatGPT;
+
+  StreamSubscription? _subscription;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    chatGPT = ChatGPT.instance,
+  }
+  @override
+  void dispose() {
+    // TODO: implement initState
+    super.dispose();
+  }
+
+  void _sendMessage() {
+    ChatMessage message = ChatMessage(text: _controller.text, sender: "user");
+
+    setState(() {
+      _messages.insert(0, message);
+    });
+
+    _controller.clear();
+  }
+
   Widget _buildTextComposer() {
     return Row(
       children: [
-        const Expanded(
+        Expanded(
           child: TextField(
+            controller: _controller,
+            onSubmitted: (value) => _sendMessage(),
             decoration: InputDecoration.collapsed(hintText: "Send a message"),
           ),
         ),
-        IconButton(onPressed: () {}, icon: const Icon(Icons.send))
+        IconButton(
+            onPressed: () => _sendMessage(), icon: const Icon(Icons.send))
       ],
-    );
+    ).px16().py16();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: const Text("AskGPT")),
-        body: Column(
-          children: [
-            Container(
-              decoration: BoxDecoration(color: context.cardColor),
-              child: _buildTextComposer(),
-            )
-          ],
+        appBar: VxAppBar(
+            title: const Text("AskGPT").text.xl4.green100.bold.make(),
+            centerTitle: true),
+        body: SafeArea(
+          child: Column(
+            children: [
+              Flexible(
+                  child: ListView.builder(
+                      reverse: true,
+                      padding: Vx.m8,
+                      itemCount: _messages.length,
+                      itemBuilder: (context, index) {
+                        return _messages[index];
+                      })),
+              Container(
+                decoration: BoxDecoration(color: context.cardColor),
+                child: _buildTextComposer(),
+              )
+            ],
+          ),
         ));
   }
 }
