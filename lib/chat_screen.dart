@@ -39,7 +39,13 @@ class _ChatScreenState extends State<ChatScreen> {
 
     _controller.clear();
 
-    final request = Complete
+    final request = CompleteText(
+      prompt: message.text, model: kChatGptTurbo0301Model, maxTokens: 200);
+
+      _subscription = chatGPT
+      .builder("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", OrgId:"")
+      .onCompleteStream(request:request)
+      .listen();
 
   }
 
