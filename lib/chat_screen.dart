@@ -22,13 +22,12 @@ class _ChatScreenState extends State<ChatScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    chatGPT = OpenAI.instance.build(),
+    chatGPT = OpenAI.instance.build();
   }
+
   @override
   void dispose() {
-    // TODO: implement initState
-    chatGPT?.close();
-    chatGPT?.genImgClose();
+    _subscription?.cancel();
     super.dispose();
   }
 
@@ -42,16 +41,17 @@ class _ChatScreenState extends State<ChatScreen> {
     _controller.clear();
 
     final request = CompleteText(
-      prompt: message.text, model: kChatGptTurbo0301Model, maxTokens: 200);
+        prompt: message.text, model: kChatGptTurbo0301Model, maxTokens: 200);
 
-      _subscription = chatGPT!
-      .builder("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", OrgId:"")
-      .onCompleteStream(request:request)
-      .listen();
-
-      final response = await chatGPT!.onCompleteText(request: request);
+    _subscription = chatGPT!
+        .builder("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",
+            OrgId: "")
+        .onCompleteStream(request: request)
+        .listen((response) {
       Vx.log(response!.choices[0].text);
-      insertNewData(response.choices[0].text, isImage: false);
+      ChatMessage botMessage =
+          ChatMessage(text: response.choices[0].text, sender: "bot");
+    });
   }
 
   Widget _buildTextComposer() {
