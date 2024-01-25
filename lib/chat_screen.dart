@@ -1,8 +1,10 @@
 import 'dart:async';
 
+import 'package:ask_gpt/threedots.dart';
 import 'package:flutter/material.dart';
 import 'package:velocity_x/velocity_x.dart';
 import 'package:chat_gpt_sdk/chat_gpt_sdk.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 
 import 'chatmessage.dart';
 
@@ -22,8 +24,12 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   void initState() {
     // TODO: implement initState
+    chatGPT = OpenAI.instance.build(
+        token:
+            dotenv.env["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"],
+        baseOption:
+            HttpSetup(receiveTimeout: const Duration(milliseconds: 60000)));
     super.initState();
-    chatGPT = OpenAI.instance.build();
   }
 
   @override
@@ -36,7 +42,7 @@ class _ChatScreenState extends State<ChatScreen> {
     ChatMessage message = ChatMessage(text: _controller.text, sender: "user");
 
     setState(() {
-      _messages.insert(0, message),
+      _messages.insert(0, message);
       _isTyping = true;
     });
 
@@ -45,21 +51,18 @@ class _ChatScreenState extends State<ChatScreen> {
     final request = CompleteText(
         prompt: message.text, model: kChatGptTurbo0301Model, maxTokens: 200);
 
-    _subscription = chatGPT!
-        .builder("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",
-            OrgId: "")
-        .onCompleteStream(request: request)
-        .listen((response) {
+    // _subscription = chatGPT!
+    //     .build(token: "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")
+
+    OpenAI.onCompleteStream(request: request).listen((response) {
       Vx.log(response!.choices[0].text);
       ChatMessage botMessage =
           ChatMessage(text: response.choices[0].text, sender: "bot");
 
       setState(() {
         _isTyping = false;
-        _messages.insert(0,botMessage);
+        _messages.insert(0, botMessage);
       });
-
-          
     });
   }
 
@@ -96,8 +99,8 @@ class _ChatScreenState extends State<ChatScreen> {
                       itemBuilder: (context, index) {
                         return _messages[index];
                       })),
-                      if(_isTyping) ThreeDots(),
-                      const Divider(height: 1.0),
+              if (_isTyping) ThreeDots(),
+              const Divider(height: 1.0),
               Container(
                 decoration: BoxDecoration(color: context.cardColor),
                 child: _buildTextComposer(),
