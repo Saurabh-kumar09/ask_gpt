@@ -49,6 +49,9 @@ class _ChatScreenState extends State<ChatScreen> {
       .onCompleteStream(request:request)
       .listen();
 
+      final response = await chatGPT!.onCompleteText(request: request);
+      Vx.log(response!.choices[0].text);
+      insertNewData(response.choices[0].text, isImage: false);
   }
 
   Widget _buildTextComposer() {
