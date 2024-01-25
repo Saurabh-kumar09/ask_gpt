@@ -17,6 +17,7 @@ class _ChatScreenState extends State<ChatScreen> {
   OpenAI? chatGPT;
 
   StreamSubscription? _subscription;
+  bool _isTyping = false;
 
   @override
   void initState() {
@@ -35,7 +36,8 @@ class _ChatScreenState extends State<ChatScreen> {
     ChatMessage message = ChatMessage(text: _controller.text, sender: "user");
 
     setState(() {
-      _messages.insert(0, message);
+      _messages.insert(0, message),
+      _isTyping = true;
     });
 
     _controller.clear();
@@ -51,6 +53,13 @@ class _ChatScreenState extends State<ChatScreen> {
       Vx.log(response!.choices[0].text);
       ChatMessage botMessage =
           ChatMessage(text: response.choices[0].text, sender: "bot");
+
+      setState(() {
+        _isTyping = false;
+        _messages.insert(0,botMessage);
+      });
+
+          
     });
   }
 
@@ -87,6 +96,8 @@ class _ChatScreenState extends State<ChatScreen> {
                       itemBuilder: (context, index) {
                         return _messages[index];
                       })),
+                      if(_isTyping) ThreeDots(),
+                      const Divider(height: 1.0),
               Container(
                 decoration: BoxDecoration(color: context.cardColor),
                 child: _buildTextComposer(),
