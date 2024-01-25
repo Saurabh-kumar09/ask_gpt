@@ -14,7 +14,7 @@ class ChatScreen extends StatefulWidget {
 class _ChatScreenState extends State<ChatScreen> {
   final TextEditingController _controller = TextEditingController();
   final List<ChatMessage> _messages = [];
-  ChatGPT? chatGPT;
+  OpenAI? chatGPT;
 
   StreamSubscription? _subscription;
 
@@ -22,11 +22,13 @@ class _ChatScreenState extends State<ChatScreen> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    ChatGPT = chatGPT.instance,
+    chatGPT = OpenAI.instance.build(),
   }
   @override
   void dispose() {
     // TODO: implement initState
+    chatGPT?.close();
+    chatGPT?.genImgClose();
     super.dispose();
   }
 
@@ -42,7 +44,7 @@ class _ChatScreenState extends State<ChatScreen> {
     final request = CompleteText(
       prompt: message.text, model: kChatGptTurbo0301Model, maxTokens: 200);
 
-      _subscription = chatGPT
+      _subscription = chatGPT!
       .builder("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", OrgId:"")
       .onCompleteStream(request:request)
       .listen();
