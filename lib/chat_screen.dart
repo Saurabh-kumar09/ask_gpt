@@ -24,11 +24,7 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   void initState() {
     // TODO: implement initState
-    chatGPT = OpenAI.instance.build(
-        token:
-            dotenv.env["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"],
-        baseOption:
-            HttpSetup(receiveTimeout: const Duration(milliseconds: 60000)));
+    chatGPT = OpenAI.instance;
     super.initState();
   }
 
@@ -49,12 +45,12 @@ class _ChatScreenState extends State<ChatScreen> {
     _controller.clear();
 
     final request = CompleteText(
-        prompt: message.text, model: kChatGptTurbo0301Model, maxTokens: 200);
+        prompt: message.text, model: kChatGptTurbo0301Model, maxTokens: 2000);
 
-    // _subscription = chatGPT!
-    //     .build(token: "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")
-
-    OpenAI.onCompleteStream(request: request).listen((response) {
+    _subscription = chatGPT!
+        .build(token: "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")
+        .onCompletionStream(request: request)
+        .listen((response) {
       Vx.log(response!.choices[0].text);
       ChatMessage botMessage =
           ChatMessage(text: response.choices[0].text, sender: "bot");
