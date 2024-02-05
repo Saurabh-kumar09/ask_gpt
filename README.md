@@ -1,6 +1,12 @@
 # ask_gpt
 
-A new Flutter project.
+A chapGPT like application built using flutter and openAI API. 
+
+## LiveLink
+[ask-gpt-live-link](https://ask-gpt.netlify.app/#/)
+
+### Current Status:
+API thowing error in sending response. [status: Working on issue]
 
 ## Getting Started
 
