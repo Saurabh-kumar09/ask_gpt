@@ -48,7 +48,7 @@ class _ChatScreenState extends State<ChatScreen> {
         prompt: message.text, model: kChatGptTurbo0301Model, maxTokens: 2000);
 
     _subscription = chatGPT!
-        .build(token: "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")
+        .build(token: "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")
         .onCompletionStream(request: request)
         .listen((response) {
       Vx.log(response!.choices[0].text);

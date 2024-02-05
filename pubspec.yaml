@@ -37,7 +37,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   chat_gpt_sdk:
     git:
-      url: https://github.com/iampawan/Flutter-ChatGPT.git
+      url: https://api.openai.com/v1/chat/completions
   velocity_x: ^3.6.0
   
 dev_dependencies:
